@@ -9,23 +9,24 @@
 import 'package:app_vendas_treino/pages/itemsPage.dart';
 import 'package:app_vendas_treino/pages/qrCode.dart';
 import 'package:flutter/material.dart';
-
 import 'pages/homePage.dart';
+import 'pages/loginPage.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
 
   final routes = <String, WidgetBuilder>{
-    HomePage.tag: (context) => HomePage(),
+    LoginPage.tag: (context) => LoginPage(),
   };
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Primeiro App',
-       home: HomePage(),
+       home: LoginPage(),
        routes: <String, WidgetBuilder> {
+         '/'
          '/QrCode' : (BuildContext context) => QrCode(),
          '/Items' : (BuildContext context) => ItemsPage(),
         //  '/Produtos' : (BuildContext context) => produtoPage();

@@ -1,4 +1,3 @@
-
 import 'package:app_vendas_treino/pages/qrCode.dart';
 import 'package:flutter/material.dart';
 
@@ -23,30 +22,31 @@ class HomePageState extends State<HomePage>{
 
 class ListaScreen extends StatelessWidget{
 
-  Widget getItem() {
-    return new Row(
-      children: [
-        IconButton(
-          icon: new Icon(Icons.check_box, color: Colors.green),
-          iconSize: 42.0, 
-          onPressed: (){},
-        ),
-        new Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text("Texto"),
-            Text("Data"),
-          ],
-        ),
-      ],
-    );
-  }
+  // Widget getItem() {
+  //   return new Row(
+  //     children: [
+  //       IconButton(
+  //         icon: new Icon(Icons.check_box, color: Colors.green),
+  //         iconSize: 42.0, 
+  //         onPressed: (){},
+  //       ),
+  //       new Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: <Widget>[
+  //           Text("Texto"),
+  //           Text("Data"),
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Footunity"),
+        backgroundColor: Color(0xff5d0dff),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add, color: Colors.white), 

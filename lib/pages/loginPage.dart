@@ -1,25 +1,18 @@
 import 'package:flutter/material.dart';
+import 'homePage.dart';
+import 'registrarPage.dart';
 
 class LoginPage extends StatefulWidget{
   
+  static String tag = 'login-page';
   final state = new _LoginState();
 
   @override
-  _LoginState createState() => state;
+  _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<LoginPage>{
  
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: new _ItensPage(),
-    );
-  }
-}
-
-class _ItensPage extends StatelessWidget{
-
   final email = TextEditingController();
   final senha = TextEditingController();
 
@@ -32,10 +25,6 @@ class _ItensPage extends StatelessWidget{
 
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Footunity'),
-        backgroundColor: Color(0xff5d0dff)
-      ),
       body: Center(
         child: _getContainer(),
       ),
@@ -119,7 +108,7 @@ class _ItensPage extends StatelessWidget{
         ),
       ),
       onTap: (){
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
       },
     );
   }
@@ -140,13 +129,13 @@ class _ItensPage extends StatelessWidget{
           ),
           InkWell(
             onTap: (){
-              // Navigator.push(
-              //   context, MaterialPageRoute(builder: (context) => RegistrarPage()));
+              Navigator.push(
+                context, MaterialPageRoute(builder: (context) => RegistrarPage()));
             },
             child: Text(
               'Registrar',
               style: TextStyle(
-                color: Color(0xfff79c4f),
+                color: Color(0xff5d0dff),
                 fontSize: 13,
                 fontWeight: FontWeight.w600
               ),

@@ -19,7 +19,10 @@ class _ProdutoGridState extends State<GridProdutos>{
   Widget build(BuildContext context) {
 
     return new Scaffold(
-      appBar: new AppBar(),
+      appBar: new AppBar(
+        title: Text('Footunity'),
+        backgroundColor: Color(0xff5d0dff),
+      ),
       body: new Container(
         child: _gridProdutoWidget(),
       ),

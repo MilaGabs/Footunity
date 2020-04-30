@@ -41,6 +41,7 @@ class ListItems extends StatelessWidget{
     return new Scaffold(
       appBar: new AppBar(
          title: new Text("Footunity"),
+         backgroundColor: Color(0xff5d0dff),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back, 

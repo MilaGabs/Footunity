@@ -27,6 +27,7 @@ class ListaScreen extends StatelessWidget{
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Qr Code"),
+        backgroundColor: Color(0xff5d0dff),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back, 

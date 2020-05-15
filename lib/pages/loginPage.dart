@@ -1,5 +1,5 @@
+import 'package:app_vendas_treino/classes/gridProdutos.dart';
 import 'package:flutter/material.dart';
-import 'homePage.dart';
 import 'registrarPage.dart';
 
 class LoginPage extends StatefulWidget{
@@ -31,7 +31,7 @@ class _LoginState extends State<LoginPage>{
     );
   }
 
-  Widget _getTextField(String title, {bool senha = false}){
+  Widget _getTextField(String title, TextEditingController controler,{bool senha = false}){
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -50,7 +50,8 @@ class _LoginState extends State<LoginPage>{
               border: InputBorder.none,
               fillColor: Color(0xfff3f3f4),
               filled: true
-            )
+            ),
+            controller: controler,
           )
         ],
       ),
@@ -82,6 +83,14 @@ class _LoginState extends State<LoginPage>{
   }
 
   Widget _getBtnEntrar() {
+    // ProdutoObj produto = ProdutoObj();
+  
+    // produto.id = 1;
+    // produto.nome = 'Tenis Nike 270';
+    // produto.imagem = 'https://i8.amplience.net/i/jpl/jd_009289_a?qlt=92';
+    // produto.preco = 120;
+    // produto.descricao = 'Este produto foi desenvolvido pela fabricante Nike';
+
     return InkWell(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 15),
@@ -108,12 +117,26 @@ class _LoginState extends State<LoginPage>{
         ),
       ),
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
-      },
+        if(email.text=='gabriel' && senha.text=='123'){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => GridProdutos()));
+        } 
+        else{
+          showDialog(
+            context: context,
+            barrierDismissible: false, 
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Email ou senha incorretos'),
+              );
+            },
+          );
+        }
+        
+      }
     );
   }
 
-  Widget _getBtnRegistrar(){
+  Widget _getBtnRegistrar(){ 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 20),
       alignment: Alignment.bottomCenter,
@@ -161,8 +184,8 @@ class _LoginState extends State<LoginPage>{
                    SizedBox(
                      height: 80,
                    ),
-                  _getTextField('Email: '),
-                  _getTextField('Senha: ', senha: true),
+                  _getTextField('Email: ', email),
+                  _getTextField('Senha: ', senha,senha: true),
                   SizedBox(
                     height: 30,
                   ),

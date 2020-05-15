@@ -135,43 +135,47 @@ class _RegistrarPageState extends State<RegistrarPage>{
         title: new Text('Footunity'),
         backgroundColor: Color(0xff5d0dff)
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(horizontal:20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(),
-                    ),
-                    _title(),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    _getCampos(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _getBtnConfirmar(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _getJaTenhoConta(),
-                    Expanded(
-                      flex: 3,
-                      child: SizedBox(),
-                    )
-                  ],
-                ),
+      body: _getPage(),
+    );
+  }
+
+  Widget _getPage(){
+    return SingleChildScrollView(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.symmetric(horizontal:20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: SizedBox(),
+                  ),
+                  _title(),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  _getCampos(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  _getBtnConfirmar(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  _getJaTenhoConta(),
+                  Expanded(
+                    flex: 3,
+                    child: SizedBox(),
+                  )
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

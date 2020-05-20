@@ -82,15 +82,53 @@ class _LoginState extends State<LoginPage>{
     );
   }
 
-  Widget _getBtnEntrar() {
-    // ProdutoObj produto = ProdutoObj();
-  
-    // produto.id = 1;
-    // produto.nome = 'Tenis Nike 270';
-    // produto.imagem = 'https://i8.amplience.net/i/jpl/jd_009289_a?qlt=92';
-    // produto.preco = 120;
-    // produto.descricao = 'Este produto foi desenvolvido pela fabricante Nike';
+  bool _verificarLogin(){
+    if (email.text == ''){
+      showDialog(
+        context: context,
+        barrierDismissible: true, 
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Campo email vazio.'),
+             actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        },
+      );
+      return false;
+    }
+    else if(senha.text == ''){
+      showDialog(
+        context: context,
+        barrierDismissible: true, 
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Campo senha vazio.'),
+             actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        },
+      );
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
 
+  Widget _getBtnEntrar() {
     return InkWell(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 15),
@@ -117,22 +155,31 @@ class _LoginState extends State<LoginPage>{
         ),
       ),
       onTap: (){
-        if(email.text=='gabriel' && senha.text=='123'){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => GridProdutos()));
-        } 
-        else{
-          showDialog(
-            context: context,
-            barrierDismissible: false, 
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('Email ou senha incorretos'),
-              );
-            },
-          );
+        if(_verificarLogin()) {
+          if(email.text=='gabriel' && senha.text=='123'){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => GridProdutos()));
+          } 
+          else{
+            showDialog(
+              context: context,
+              barrierDismissible: true, 
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Email e/ou Senha inválido.'),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('Ok'),
+                      onPressed: (){
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              },
+            );
+          }  
         }
-        
-      }
+      }  
     );
   }
 

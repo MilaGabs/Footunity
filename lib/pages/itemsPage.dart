@@ -1,5 +1,4 @@
 import 'package:app_vendas_treino/classes/gridProdutos.dart';
-import 'package:app_vendas_treino/pages/qrCode.dart';
 import 'package:flutter/material.dart';
 
 class ItemsPage extends StatefulWidget{
@@ -42,15 +41,6 @@ class ListItems extends StatelessWidget{
       appBar: new AppBar(
          title: new Text("Footunity"),
          backgroundColor: Color(0xff5d0dff),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back, 
-            color: Colors.white
-            ), 
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => QrCode()));
-            }
-          )
       ),
       body:  GridView.count(
           // Create a grid with 2 columns. If you change the scrollDirection to
@@ -65,9 +55,9 @@ class ListItems extends StatelessWidget{
               child: Container(
                 child: getItem(),
               ),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => QrCode()));
-              }
+              onPressed: (){
+                
+              },
             );
           }),
         ),

@@ -7,11 +7,9 @@ class Produto extends StatelessWidget{
 
   Produto(this.produtoObj);
 
-  BuildContext _context;
 
   @override
   Widget build(BuildContext context) {
-    this._context = context;
     return new Container(
       // margin: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 5.0, top: 0.0),
       child: new Material(

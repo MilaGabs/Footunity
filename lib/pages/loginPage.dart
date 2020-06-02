@@ -1,9 +1,18 @@
-import 'package:app_vendas_treino/classes/gridProdutos.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
+
+import 'package:app_vendas_treino/pages/homePage.dart';
+import 'package:app_vendas_treino/services/router-service.dart';
+
 import 'registrarPage.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart' as toast;
+import '../shared/sharedConstants.dart' as constants;
+
 
 class LoginPage extends StatefulWidget{
-  
   static String tag = 'login-page';
   final state = new _LoginState();
 
@@ -11,8 +20,8 @@ class LoginPage extends StatefulWidget{
   _LoginState createState() => _LoginState();
 }
 
-class _LoginState extends State<LoginPage>{
- 
+class _LoginState extends State<LoginPage> {
+
   final email = TextEditingController();
   final senha = TextEditingController();
 
@@ -154,30 +163,31 @@ class _LoginState extends State<LoginPage>{
           style: TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
-      onTap: (){
+      onTap: () async {
         if(_verificarLogin()) {
-          if(email.text=='gabriel' && senha.text=='123'){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => GridProdutos()));
-          } 
-          else{
-            showDialog(
-              context: context,
-              barrierDismissible: true, 
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Email e/ou Senha inválido.'),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: Text('Ok'),
-                      onPressed: (){
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ],
-                );
-              },
-            );
-          }  
+          var user = new LoginModel(email.text, senha.text);
+          var body = json.encode(user);
+          try{
+            var response = await http.post(constants.AuthAPILink + '/generatetoken', body: body, headers: { "content-type": "application/json; charset=utf-8"});
+            if(response.statusCode == 200) {
+              var retorno = json.decode(response.body);
+              var preferences = await SharedPreferences.getInstance();
+              preferences.setString(constants.LoginKey, retorno['token'].toString());
+              preferences.setString(constants.AuthKey, json.encode(retorno['auth']));
+              await toast.Fluttertoast.showToast(
+                    backgroundColor: Colors.red,
+                    msg: "Login realizado com sucesso!",
+                    toastLength: Toast.LENGTH_SHORT
+                  );
+              Navigator.push(context, RouterService.buildRoute(HomePage(), preferences));
+            }
+            else{
+              throw new Exception();
+            }
+          }
+          catch(value) {
+            retornarDialog(context, 'Ocorreu um erro ao realizar login. Verifique seu usuário e senha');
+          }
         }
       }  
     );
@@ -251,3 +261,38 @@ class _LoginState extends State<LoginPage>{
   }
 
 } 
+
+
+class LoginModel {
+  final String email;
+  final String password;
+
+  LoginModel(this.email, this.password);
+
+  toJson() {
+    return {
+      'Email': email,
+      'Password': password
+    };
+  }
+}
+
+retornarDialog(context, texto){
+  showDialog(
+      context: context,
+      barrierDismissible: true, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(texto),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+  );
+}

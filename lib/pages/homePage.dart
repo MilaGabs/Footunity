@@ -26,6 +26,9 @@ class ListaScreen extends State<HomePage>{
 
   @override
   Widget build(BuildContext context) {
+    var json = prefs.getString(constants.AuthKey);
+    var itensJson = jsonDecode(json);
+
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Footunity"),
@@ -36,28 +39,29 @@ class ListaScreen extends State<HomePage>{
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              child: StreamBuilder<SharedPreferences>(
-                stream: _prefs,
-                builder: (context, snapshot) {
-                  switch(snapshot.connectionState){
-                    case ConnectionState.done:
-                      prefs = snapshot.data;
-                      var json = prefs.getString(constants.AuthKey);
-                      var object = jsonDecode(json);
-                      Text('Olá ' + object[2]);
-                      break;
-                    case ConnectionState.none:
-                      Text('Olá');
-                      break;
-                    case ConnectionState.waiting:
-                      Text('Olá');
-                      break;
-                    case ConnectionState.active:
-                      Text('Olá');
-                      break;
-                  }
-                }
-              )
+              // child: StreamBuilder<SharedPreferences>(
+              //   stream: _prefs,
+              //   builder: (context, snapshot) {
+              //     switch(snapshot.connectionState){
+              //       case ConnectionState.done:
+              //         prefs = snapshot.data;
+              //         var json = prefs.getString(constants.AuthKey);
+              //         var object = jsonDecode(json);
+              //         Text('Olá ' + object[2]);
+              //         break;
+              //       case ConnectionState.none:
+              //         Text('Olá');
+              //         break;
+              //       case ConnectionState.waiting:
+              //         Text('Olá');
+              //         break;
+              //       case ConnectionState.active:
+              //         Text('Olá');
+              //         break;
+              //     }
+              //   }
+              // )
+              child: Text('Olá '+itensJson['nome']),
             )
           ],
         ),
@@ -66,10 +70,10 @@ class ListaScreen extends State<HomePage>{
         child: Icon(Icons.swap_horizontal_circle, color: Colors.white),
         onPressed: () async {
           await startMeasure(context, "");
-          /*setState(() async {
+          setState(() async {
             var result = await BarcodeScanner.scan();
             await startMeasure(context, result);
-          });*/
+          });
         },
         backgroundColor: Color(0xff5d0dff),
       ),

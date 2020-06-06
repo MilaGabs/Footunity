@@ -1,11 +1,14 @@
+import 'package:app_vendas_treino/services/router-service.dart';
 import 'package:dart_amqp/dart_amqp.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_vendas_treino/shared/sharedConstants.dart' as constants;
 import 'package:http/http.dart' as http;
-
 import 'dart:convert';
+import 'gridProdutos.dart';
+import 'medicoesPage.dart';
 
 String authKey;
 SharedPreferences preferences;
@@ -16,13 +19,16 @@ class HomePage extends StatefulWidget{
   State<StatefulWidget> createState() => ListaScreen();
 }
 
+Future<String> _getNome() async {
+  var prefs = await SharedPreferences.getInstance();
+  var json = prefs.getString(constants.AuthKey);
+  var itensJson = jsonDecode(json);
+  return itensJson['nome'];
+}
+
 class ListaScreen extends State<HomePage>{
-  Stream<SharedPreferences> _prefs = (() async* {
-    yield prefs = await SharedPreferences.getInstance();
-  })();
 
   Future<String> textoLido;
-  static SharedPreferences prefs;
 
   @override
   Widget build(BuildContext context) {
@@ -36,28 +42,38 @@ class ListaScreen extends State<HomePage>{
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              child: StreamBuilder<SharedPreferences>(
-                stream: _prefs,
+              child: FutureBuilder(
+                future: _getNome(),
                 builder: (context, snapshot) {
-                  switch(snapshot.connectionState){
-                    case ConnectionState.done:
-                      prefs = snapshot.data;
-                      var json = prefs.getString(constants.AuthKey);
-                      var object = jsonDecode(json);
-                      Text('Olá ' + object[2]);
-                      break;
-                    case ConnectionState.none:
-                      Text('Olá');
-                      break;
-                    case ConnectionState.waiting:
-                      Text('Olá');
-                      break;
-                    case ConnectionState.active:
-                      Text('Olá');
-                      break;
+                  if(snapshot.connectionState == ConnectionState.done){
+                    return Text('Olá ' + snapshot.data);
+                  }
+                  else{
+                    return Text('Olá');
                   }
                 }
-              )
+              ),
+            ),
+            ListTile(
+              title: Text('Home'),
+              onTap: () async {
+                var prefs = await SharedPreferences.getInstance();
+                Navigator.of(context).push(RouterService.buildRoute(HomePage(), prefs));
+              },
+            ),
+            ListTile(
+              title: Text('Medições'),
+              onTap: () async {
+                var prefs = await SharedPreferences.getInstance();
+                Navigator.of(context).push(RouterService.buildRoute(Medicoes(), prefs));
+              },
+            ),
+            ListTile(
+              title: Text('Produtos'),
+              onTap: () async {
+                var prefs = await SharedPreferences.getInstance();
+                Navigator.of(context).push(RouterService.buildRoute(GridProdutos(), prefs));
+              },
             )
           ],
         ),
@@ -65,11 +81,10 @@ class ListaScreen extends State<HomePage>{
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.swap_horizontal_circle, color: Colors.white),
         onPressed: () async {
-          await startMeasure(context, "");
-          /*setState(() async {
+          setState(() async {
             var result = await BarcodeScanner.scan();
             await startMeasure(context, result);
-          });*/
+          });
         },
         backgroundColor: Color(0xff5d0dff),
       ),
@@ -142,9 +157,54 @@ startMeasure(context, macAdrress) async {
     .channel()
     .then((Channel channel) => channel.queue("ReturnMeasure"))
     .then((Queue queue) => queue.consume())
-    .then((Consumer consumer) => consumer.listen((AmqpMessage message) {
-      var json = message.payloadAsJson;
+    .then((Consumer consumer) => consumer.listen((AmqpMessage message) async {
+      var jsonParsed = message.payloadAsJson;
+      var medidaInserida = jsonParsed['idMedicao'];
       Navigator.pop(dialogContext);
       client.close();
+      var reqHeader = { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + prefs.getString(constants.LoginKey),
+        'Access-Control-Allow-Origin': '*'
+      };
+      var url = constants.FootAPILink + "medicoes/obtermedicao/" + medidaInserida.toString();
+      var request = await http.get(url, headers: reqHeader);
+      if(request.statusCode == 200){
+        _showLastMedicao(context, jsonDecode(request.body));
+      }
     }));
+}
+
+_showLastMedicao(context, data){
+  showDialog(
+    barrierDismissible: true,
+    context: context,
+    child: new AlertDialog(
+      title: new Column(
+        children: <Widget>[
+          new Text("Medição"),
+          new Row(),
+          new Icon(
+            Icons.transform,
+            color: Color(0xff5d0dff),
+          ),
+        ],
+      ),
+      content: new Container(
+        width: 75,
+        height: 130,
+        child: new Column(
+          children: <Widget>[
+            new Text("Centimetros: " + data["centimetros"].toString()),
+            new Text("Inches: " + data["inches"].toString()),
+            new Text("BR: " + data["br"].toString()),
+            new Text("UK: " + data["uk"].toString()),
+            new Text("EU: " + data["eu"].toString()),
+            new Text("US: " + data["us"].toString()),
+          ],
+          crossAxisAlignment: CrossAxisAlignment.start
+        ),
+      ),
+    )
+  );
 }

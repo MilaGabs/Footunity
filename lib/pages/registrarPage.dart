@@ -305,7 +305,6 @@ class _RegistrarPageState extends State<RegistrarPage>{
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: new AppBar(
         title: new Text('Footunity'),

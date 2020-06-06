@@ -64,7 +64,7 @@ class _ProdutoState extends State<ProdutoPage>{
     );
   }
 
-  String calculaParcela(int preco){
+  String calculaParcela(double preco){
     double resultado;
 
     resultado = (preco/12);

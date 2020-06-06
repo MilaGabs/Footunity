@@ -175,7 +175,7 @@ class _LoginState extends State<LoginPage> {
               preferences.setString(constants.LoginKey, retorno['token'].toString());
               preferences.setString(constants.AuthKey, json.encode(retorno['auth']));
               await toast.Fluttertoast.showToast(
-                    backgroundColor: Colors.red,
+                    backgroundColor: Colors.green,
                     msg: "Login realizado com sucesso!",
                     toastLength: Toast.LENGTH_SHORT
                   );

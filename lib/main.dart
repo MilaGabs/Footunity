@@ -7,13 +7,14 @@
 // https://medium.com/@rafaelbarbosatec/flutter-construindo-uma-linda-aplica%C3%A7%C3%A3o-de-not%C3%ADcias-parte-2-86586a18dae
 
 import 'package:app_vendas_treino/pages/homePage.dart';
+import 'package:app_vendas_treino/pages/medicoesPage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/loginPage.dart';
 import 'shared/sharedConstants.dart' as constants;
 
 void main() async {
-  runApp(MyApp());
+  runApp(new MyApp());
 }
 
 Future<bool> hasSession() async {

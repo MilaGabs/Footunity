@@ -8,7 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_vendas_treino/shared/sharedConstants.dart' as constants;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-// import 'medicoesPage.dart';
+import 'gridProdutos.dart';
+import 'medicoesPage.dart';
+
 
 String authKey;
 SharedPreferences preferences;
@@ -72,7 +74,7 @@ class ListaScreen extends State<HomePage>{
                   trailing: Icon(Icons.arrow_forward),
                   onTap: () async {
                     var prefs = await SharedPreferences.getInstance();
-                    // Navigator.of(context).push(RouterService.buildRoute(Medicoes(), prefs));
+                    Navigator.of(context).push(RouterService.buildRoute(Medicoes(), prefs));
                   },
                 ),
                 ListTile(
@@ -81,7 +83,7 @@ class ListaScreen extends State<HomePage>{
                   trailing: Icon(Icons.arrow_forward),
                   onTap: () async {
                     var prefs = await SharedPreferences.getInstance();
-                    // Navigator.of(context).push(RouterService.buildRoute(Medicoes(), prefs));
+                    Navigator.of(context).push(RouterService.buildRoute(GridProdutos(), prefs));
                   },
                 ),
                 Expanded(
@@ -105,8 +107,7 @@ class ListaScreen extends State<HomePage>{
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.swap_horizontal_circle, color: Colors.white),
-        onPressed: () async {
-          //await startMeasure(context, "");
+        onPressed: () {
           setState(() async {
             var result = await BarcodeScanner.scan();
             await startMeasure(context, result);
@@ -184,13 +185,53 @@ startMeasure(context, macAdrress) async {
     .then((Channel channel) => channel.queue("ReturnMeasure"))
     .then((Queue queue) => queue.consume())
     .then((Consumer consumer) => consumer.listen((AmqpMessage message) async {
-      var json = message.payloadAsJson;
+      var jsonParsed = message.payloadAsJson;
+      var medidaInserida = jsonParsed['idMedicao'];
       Navigator.pop(dialogContext);
       client.close();
-      Fluttertoast.showToast(
-          backgroundColor: Colors.green,
-          msg: "Leitura realizado com sucesso!",
-          toastLength: Toast.LENGTH_SHORT
-        );
+      var reqHeader = { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + prefs.getString(constants.LoginKey),
+        'Access-Control-Allow-Origin': '*'
+      };
+      var url = constants.FootAPILink + "medicoes/obtermedicao/" + medidaInserida.toString();
+      var request = await http.get(url, headers: reqHeader);
+      if(request.statusCode == 200){
+        _showLastMedicao(context, jsonDecode(request.body));
+      }
     }));
+}
+
+_showLastMedicao(context, data){
+  showDialog(
+    barrierDismissible: true,
+    context: context,
+    child: new AlertDialog(
+      title: new Column(
+        children: <Widget>[
+          new Text("Medição"),
+          new Row(),
+          new Icon(
+            Icons.transform,
+            color: Color(0xff5d0dff),
+          ),
+        ],
+      ),
+      content: new Container(
+        width: 75,
+        height: 130,
+        child: new Column(
+          children: <Widget>[
+            new Text("Centimetros: " + data["centimetros"].toString()),
+            new Text("Inches: " + data["inches"].toString()),
+            new Text("BR: " + data["br"].toString()),
+            new Text("UK: " + data["uk"].toString()),
+            new Text("EU: " + data["eu"].toString()),
+            new Text("US: " + data["us"].toString()),
+          ],
+          crossAxisAlignment: CrossAxisAlignment.start
+        ),
+      ),
+    )
+  );
 }

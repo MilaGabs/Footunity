@@ -32,6 +32,9 @@ class ListaScreen extends State<HomePage>{
 
   @override
   Widget build(BuildContext context) {
+    var json = prefs.getString(constants.AuthKey);
+    var itensJson = jsonDecode(json);
+
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Footunity"),
@@ -80,7 +83,7 @@ class ListaScreen extends State<HomePage>{
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.swap_horizontal_circle, color: Colors.white),
-        onPressed: () async {
+        onPressed: () {
           setState(() async {
             var result = await BarcodeScanner.scan();
             await startMeasure(context, result);
